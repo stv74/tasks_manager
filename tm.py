@@ -8,6 +8,6 @@ if __name__ == "__main__":
     tasks = load_tasks(DATA_FILE)
     main_loop(tasks)
     save_tasks(DATA_FILE, tasks)
-    print("Data saved. Program terminated. Goodbye!")
+    print("Data saved. Exiting program. Goodbye!")
 
 
