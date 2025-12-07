@@ -48,7 +48,44 @@ def main_loop(tasks):
             break
         else:
             print(f"Unknown command {command}. Type 'help' for assistance.")
-# End of main function
+# End of main_loop function
 
+# Creating lists and tasks
 def add(tasks, arguments):
-    pass
+    # Specify what needs to be created (list or task), if not specified
+    if not arguments:
+        input_type = input("Choose what to create - a task or a list? ").strip().lower()
+        if input_type == 'task' or input_type == 'list':
+            arguments.append(input_type)
+        else:
+            print("Invalid choice.")
+            return
+        
+    # Dictionary for storing input results
+    user_input_map = {}
+
+    # Getting common inputs
+    while True:
+        title = input("Enter a title: ").strip()
+        if title:
+            user_input_map['title'] = title
+            break
+    description = input("Enter a description (optional): ").strip()
+    if description:
+        user_input_map['description'] = description
+    if arguments[0] == 'list':
+        list_id = add_list(tasks, user_input_map)
+        print(f"List width ID {list_id} added successfully.")
+    elif arguments[0] == 'task':
+        # Getting task-specific inputs
+        priority = input("Enter priority (low, medium, high) [default: medium]: ").strip().lower()
+        if priority in ['low', 'medium', 'high']:
+            user_input_map['priority'] = priority
+        else:
+            user_input_map['priority'] = 'medium'
+        input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
+        if input_list_id:
+            user_input_map['list_id'] = input_list_id
+        add_task(tasks, user_input_map)
+        print("Task added successfully.")
+# End of add function
