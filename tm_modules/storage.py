@@ -1,8 +1,15 @@
-# Working with a data file
+"""
+Module storage.py 
+Contains functions for storing and retrieving data in a task management system.
+"""
+
 import json
 from .exceptions import InvalidDataFormat, DataLoadError, DataSaveError
 
 def load_data(file_path):
+    """
+    Loads data from a JSON file or returns an empty list.
+    """
     try:        
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)            
