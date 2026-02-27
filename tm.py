@@ -11,3 +11,4 @@ if __name__ == "__main__":
     print("Data saved. Exiting program. Goodbye!")
 
 
+# {"tasks": [], "taskLists": []}

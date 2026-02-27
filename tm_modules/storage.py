@@ -8,14 +8,15 @@ from .exceptions import InvalidDataFormat, DataLoadError, DataSaveError
 
 def load_data(file_path):
     """
-    Loads data from a JSON file or returns an empty list.
+    Loads data from a JSON file or returns an empty dictionary.
     """
     try:        
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)            
 
-    except FileNotFoundError:
-        return {"tasks": [], "taskLists": []}
+    #except FileNotFoundError as e:
+        # Create a new data file or end the program
+        #raise DataLoadError(f"File not found: {e}") from e
     
     except json.JSONDecodeError as e:
         raise InvalidDataFormat(f"JSON decoding error: {e}") from e
