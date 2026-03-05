@@ -1,10 +1,10 @@
 """
 Module storage.py 
-Contains functions for storing and retrieving data in a task management system.
+Contains functions for storing and retrieving data in the Task Manager application.
 """
 
 import json
-from .exceptions import InvalidDataFormat, DataLoadError, DataSaveError
+from .exceptions import InvalidDataFormat, DataLoadError, DataSaveError, DataFileNotFoundError
 
 def load_data(file_path):
     """
@@ -14,9 +14,8 @@ def load_data(file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)            
 
-    except FileNotFoundError:
-        # Create a new data file
-        data = {"tasks": [], "taskLists": []}
+    except FileNotFoundError:        
+        raise DataFileNotFoundError("Data file not found. New file created", {"tasks": [], "taskLists": []})
     
     except json.JSONDecodeError as e:
         raise InvalidDataFormat(f"JSON decoding error: {e}") from e

@@ -1,4 +1,8 @@
-# Exception classes
+"""
+Module exceptions.py
+Contain custom exception classes for the Task Manager application.
+"""
+
 class TaskManagerError(Exception):
     """Base exception class for Task Manager errors."""
     pass
@@ -6,6 +10,13 @@ class TaskManagerError(Exception):
 class StorageError(TaskManagerError):
     """Basic exception for errors related to data storage."""
     pass
+
+class DataFileNotFoundError(StorageError):
+    """Occurs when the data file is not found."""
+    def __init__(self, message, default_data):
+        self.message = message
+        self.default_data = default_data
+        super().__init__(message)
 
 class DataLoadError(StorageError):
     """Occurs when data cannot be loaded (problems with the file or JSON)."""

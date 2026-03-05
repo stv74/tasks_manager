@@ -8,7 +8,7 @@ from tm_modules.exceptions import TaskManagerError
 if __name__ == "__main__":
     tm_data = get_data()
     main_loop(tm_data)
-    save_data(DATA_FILE, tm_data)
+    save_data(tm_data)
     print("Data saved. Exiting program. Goodbye!")
 
 
