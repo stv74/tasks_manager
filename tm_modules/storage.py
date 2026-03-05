@@ -14,14 +14,14 @@ def load_data(file_path):
         with open(file_path, 'r', encoding='utf-8') as file:
             data = json.load(file)            
 
-    #except FileNotFoundError as e:
-        # Create a new data file or end the program
-        #raise DataLoadError(f"File not found: {e}") from e
+    except FileNotFoundError:
+        # Create a new data file
+        data = {"tasks": [], "taskLists": []}
     
     except json.JSONDecodeError as e:
         raise InvalidDataFormat(f"JSON decoding error: {e}") from e
     
-    except (IOError, OSError) as e:
+    except (OSError) as e:
         raise DataLoadError(f"File read error: {e}") from e
 
     return data
