@@ -12,7 +12,7 @@ def load_data(file_path):
     """
     try:        
         with open(file_path, 'r', encoding='utf-8') as file:
-            data = json.load(file)            
+            return json.load(file)            
 
     except FileNotFoundError:        
         raise DataFileNotFoundError("Data file not found. New file created", {"tasks": [], "taskLists": []})
@@ -22,8 +22,6 @@ def load_data(file_path):
     
     except (OSError) as e:
         raise DataLoadError(f"File read error: {e}") from e
-
-    return data
 
 def save_data(file_path, tm_data):
     try:
