@@ -3,31 +3,41 @@ Module core.py
 Contains the main logic for managing tasks, including functions for adding, editing, deleting, and displaying tasks.
 """
 
+from .storage import load_data, save_data
+from .models import Task, TaskList
+from . import exceptions
 from datetime import datetime
-from tm_modules.config import DATA_FILE
-from tm_modules.storage import load_data, save_data
 
+# Global variables to hold tasks and task lists in memory
 tasks = []
 task_lists = []
 
+# Reading/storage and primary data processing
 def get_data():
     """
     Receives, validates, and transforms data from the storage file.     
     """
-    try:
-        tm_data = load_data(DATA_FILE)
-    except Exception as e:
-        print(f"Error occurred while loading data: {e}")
-        return {"tasks": [], "taskLists": []}
+    tm_data = load_data()
+    global tasks, task_lists
+    if isinstance(tm_data, dict) and 'tasks' in tm_data and 'taskLists' in tm_data and isinstance(tm_data['tasks'], list) and isinstance(tm_data['taskLists'], list):
+        for task in tm_data['tasks']:
+            if isinstance(task, dict):
+                tasks.append(Task.from_dict(task))
+        for task_list in tm_data['taskLists']:
+            if isinstance(task_list, dict):
+                task_lists.append(TaskList.from_dict(task_list))
+    else:
+        raise exceptions.InvalidDataFormat("The structure of the data file is incorrect.")      
 
-def send_data(tm_data):
+def send_data():
     """
-    Validates and transforms data before saving to the storage file.
+    Transforms data before saving to the storage file.
     """
-    try:
-        save_data(DATA_FILE, tm_data)
-    except Exception as e:
-        print(f"Error occurred while saving data: {e}")
+    tm_data = {
+        'tasks': [task.to_dict() for task in tasks],
+        'taskLists': [task_list.to_dict() for task_list in task_lists]
+    }
+    save_data(tm_data)
 
 # Функції для керування завданнями
 def add(tasks, task):

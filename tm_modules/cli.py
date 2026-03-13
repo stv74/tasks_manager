@@ -1,11 +1,17 @@
+"""
+Module cli.py
+Contains the main loop of the Console Task Manager (CTM) application, which handles user input and dispatches commands to the appropriate functions in the core module. The CLI provides an interface for users to interact with their tasks and lists, allowing them to create, view, edit, complete, and delete tasks and lists through simple text commands.
+"""
+
 from datetime import datetime
 from .core import add, add_list, add_task, list_tasks, edit_task, remove_task, complete_task
-from .storage import load_tasks, save_tasks
-from .config import DATA_FILE, VERSION
+from .config import VERSION
 import shlex
 
-# Main function of the program
-def main_loop(tasks):
+def main_loop():
+    """
+    Main function of the program, which handles user input and dispatches commands to the appropriate functions in the core module.
+    """
     print(f"--- Console Task Manager v{VERSION} ---")
     print("To get started, enter one of the following commands: ")
     print("add - add a task or list;")
@@ -27,11 +33,7 @@ def main_loop(tasks):
 
     # Main loop
     while True:
-        try:
-            user_input = input("Enter the command: ").strip()
-        except EOFError:
-            print("\nExiting program. Goodbye!")
-            break
+        user_input = input("Enter the command: ").strip()            
         if not user_input:
             continue
         parts = shlex.split(user_input)
@@ -89,3 +91,9 @@ def add(tasks, arguments):
         add_task(tasks, user_input_map)
         print("Task added successfully.")
 # End of add function
+
+def send_message(message):
+    """
+    Displays informational messages to the user that do not require any action from him.
+    """
+    print(message)
