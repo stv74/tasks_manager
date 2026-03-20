@@ -9,7 +9,7 @@ class Task:
 
     Attributes
     ----------
-    id : int
+    id : str
         Unique identifier for the task
     title : str
         Title of the task
@@ -76,7 +76,7 @@ class TaskList:
 
     Attributes
     ----------
-    id : int
+    id : str
         Unique identifier for the task list
     title : str
         Title of the task list

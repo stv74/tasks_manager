@@ -5,15 +5,14 @@ Contains functions for storing and retrieving data in the Task Manager applicati
 
 import json
 import os
-from .config import DATA_FILE
 from .exceptions import InvalidDataFormat, DataLoadError, DataSaveError
 
-def load_data():
+def load_data(path):
     """
     Loads data from a JSON file.
     """
     try:        
-        with open(DATA_FILE, 'r', encoding='utf-8') as file:
+        with open(path, 'r', encoding='utf-8') as file:
             return json.load(file) 
     
     except json.JSONDecodeError as e:
@@ -22,14 +21,14 @@ def load_data():
     except OSError as e:
         raise DataLoadError(f"File read error: {e}") from e
 
-def save_data(tm_data):
+def save_data(tm_data, path):
     """
     Saves data back to a JSON file using atomic write.
     """
-    temp_file = DATA_FILE + '.tmp'
+    temp_file = path + '.tmp'
     try:
         with open(temp_file, 'w', encoding='utf-8') as file:
             json.dump(tm_data, file, indent=4, ensure_ascii=False)
-        os.replace(temp_file, DATA_FILE)
+        os.replace(temp_file, path)
     except OSError as e:
         raise DataSaveError(f"File write error: {e}") from e

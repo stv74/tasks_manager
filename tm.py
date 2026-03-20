@@ -1,21 +1,23 @@
 #!/usr/bin/env python3
 
 import sys
+from tm_modules.config import DATA_FILE_PATH
 from tm_modules.core import get_data, send_data
 from tm_modules.cli import main_loop
 from tm_modules.exceptions import TaskManagerError, StorageError, DataSaveError
 
 if __name__ == "__main__":
     try:
-        get_data()
+        tm_data = get_data(DATA_FILE_PATH)
     except FileNotFoundError:
         print("Data file not found. Creating a new empty one")
+        tm_data = {"tasks": [], "taskLists": []}
     except StorageError as e:
         print(f"Unable to read data. {e}")
         sys.exit(1)
 
     try:
-        main_loop()
+        main_loop(tm_data)
     except EOFError:
         print("\nExiting program. Goodbye!")
     except TaskManagerError as e:
@@ -24,7 +26,7 @@ if __name__ == "__main__":
         print(f"An unexpected error occurred: {e}")
     finally:
         try:
-            send_data()
+            send_data(tm_data, DATA_FILE_PATH)
         except DataSaveError as e:
             print(f"Unable to save data. {e}")
         else:

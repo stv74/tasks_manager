@@ -4,11 +4,11 @@ Contains the main loop of the Console Task Manager (CTM) application, which hand
 """
 
 from datetime import datetime
-from .core import add, add_list, add_task, list_tasks, edit_task, remove_task, complete_task
+from .core import add_list, add_task, list_tasks, edit_task, remove_task, complete_task
 from .config import VERSION
 import shlex
 
-def main_loop():
+def main_loop(tm_data):
     """
     Main function of the program, which handles user input and dispatches commands to the appropriate functions in the core module.
     """
@@ -28,7 +28,7 @@ def main_loop():
         "list": list_tasks,
         "edit": edit_task,
         "complete": complete_task,
-        "delete": remove_task
+        "delete": remove
     }
 
     # Main loop
@@ -41,7 +41,7 @@ def main_loop():
         arguments = parts[1:]
         if command in commands:
             command_func = commands[command]
-            command_func(tasks, arguments) 
+            command_func(tm_data, arguments) 
         elif command == "help":
             print("Available commands:")
             for cmd in commands.keys():
@@ -53,14 +53,17 @@ def main_loop():
 # End of main_loop function
 
 # Creating lists and tasks
-def add(tasks, arguments):
+def add(tm_data, arguments):
+    """
+    Handles the 'add' command, allowing users to create new tasks or lists. If the user does not specify whether they want to add a task or a list, the function will prompt them to choose. It then collects the necessary information for the chosen type (title, description, priority, list ID) and calls the appropriate function from the core module to create the task or list.
+    """
     # Specify what needs to be created (list or task), if not specified
     if not arguments:
         input_type = input("Choose what to create - a task or a list? ").strip().lower()
         if input_type == 'task' or input_type == 'list':
             arguments.append(input_type)
         else:
-            print("Invalid choice.")
+            print("Invalid choice. Task cannot be created.")
             return
         
     # Dictionary for storing input results
@@ -72,12 +75,11 @@ def add(tasks, arguments):
         if title:
             user_input_map['title'] = title
             break
-    description = input("Enter a description (optional): ").strip()
-    if description:
-        user_input_map['description'] = description
+    user_input_map['description'] = input("Enter a description (optional): ").strip()    
     if arguments[0] == 'list':
-        list_id = add_list(tasks, user_input_map)
-        print(f"List width ID {list_id} added successfully.")
+        # Getting list-specific inputs
+        list_id = add_list(tm_data, user_input_map)
+        print(f"List with ID {list_id} added successfully.")
     elif arguments[0] == 'task':
         # Getting task-specific inputs
         priority = input("Enter priority (low, medium, high) [default: medium]: ").strip().lower()
@@ -88,9 +90,20 @@ def add(tasks, arguments):
         input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
         if input_list_id:
             user_input_map['list_id'] = input_list_id
-        add_task(tasks, user_input_map)
+        add_task(tm_data, user_input_map)
         print("Task added successfully.")
 # End of add function
+
+def remove(tm_data, arguments):
+    """
+    Handles the "delete" command, which allows users to delete tasks or lists.
+    """
+    if not arguments:
+        input_id = input("Enter the number of the list or task you want to delete.").strip()
+        arguments.append(input_id)
+    
+    
+    
 
 def send_message(message):
     """
