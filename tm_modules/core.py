@@ -63,7 +63,8 @@ def generate_id(data, prefix):
     Generates a unique ID for a new task or list by finding the maximum existing ID in the current data and incrementing it by one. This ensures that each new task or list has a unique identifier.
 
     :param data: The current data containing existing tasks and lists.
-    :return: A unique ID for the new task or list.
+    :param prefix: A string indicating whether the ID is for a task ('T') or a list ('L').
+    :return: A unique string ID for the new task or list.
     """
     if not data:
         if prefix == 'T':
@@ -72,8 +73,9 @@ def generate_id(data, prefix):
             return 'L1'
     for item in data:
         
-    max_id = max(item.id[1:] for item in data)
-    return max_id + 1
+        
+    #max_id = max(item.id[1:] for item in data)
+    #return max_id + 1
 
 def remove_task(tasks, task_id):
     pass
