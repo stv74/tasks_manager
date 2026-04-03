@@ -11,19 +11,15 @@ from datetime import datetime
 # Reading/storage and primary data processing
 def get_data(path):
     """
-    Receives, validates, and transforms data from the storage file.     
+    Receives and transforms data from the storage file.     
     """
-    tm_data = {"tasks": [], "taskLists": []}
-    data_file = load_data(path)
-    if isinstance(data_file, dict) and 'tasks' in data_file and 'taskLists' in data_file and isinstance(data_file['tasks'], list) and isinstance(data_file['taskLists'], list):
-        for task in data_file['tasks']:
-            if isinstance(task, dict):
-                tm_data['tasks'].append(Task.from_dict(task))
-        for task_list in data_file['taskLists']:
-            if isinstance(task_list, dict):
-                tm_data['taskLists'].append(TaskList.from_dict(task_list))
-    else:
-        raise exceptions.InvalidDataFormat("The structure of the data file is incorrect.")      
+    tm_data = {}
+    cleaned_data, message = load_data(path)
+    
+    tm_data['tasks'] = [Task.from_dict(t) for t in cleaned_data['tasks']]
+    tm_data['taskLists'] = [TaskList.from_dict(l) for l in cleaned_data['taskLists']]
+
+    return tm_data, message     
 
 def send_data(tm_data, path):
     """
@@ -71,7 +67,7 @@ def generate_id(data, prefix):
             return 'T1'
         elif prefix == 'L':
             return 'L1'
-    for item in data:
+    #for item in data:
         
         
     #max_id = max(item.id[1:] for item in data)

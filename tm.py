@@ -8,7 +8,9 @@ from tm_modules.exceptions import TaskManagerError, StorageError, DataSaveError
 
 if __name__ == "__main__":
     try:
-        tm_data = get_data(DATA_FILE_PATH)
+        tm_data, message = get_data(DATA_FILE_PATH)
+        if message:
+            print(message)
     except FileNotFoundError:
         print("Data file not found. Creating a new empty one")
         tm_data = {"tasks": [], "taskLists": []}
