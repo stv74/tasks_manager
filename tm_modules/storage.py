@@ -6,12 +6,15 @@ Contains functions for storing, retrieving and validating data in the Task Manag
 import os
 import json
 import shutil
-from .utils import parse_id_to_int, format_int_to_id
+import re
 from .exceptions import InvalidDataFormat, DataLoadError, DataSaveError
 
 def load_data(path):
     """
     Loads data from a JSON file and validates it.
+
+    param path: The path to the JSON file containing the data.
+    return: A tuple containing the loaded data and an optional warning message about any corrupted items that were removed during validation.
     """
     try:        
         with open(path, 'r', encoding='utf-8') as file:
@@ -60,7 +63,7 @@ def _create_backup(path):
     except OSError:
         return False
 
-def _is_item_valid(item, schema):
+def _is_item_valid(item, schema, id_pattern):
         """
         Technical check: Does the dictionary conform to the given type scheme?
 
@@ -69,10 +72,16 @@ def _is_item_valid(item, schema):
         return: True if the item is valid according to the schema, False otherwise.
         """
         if not isinstance(item, dict): return False
+        
         # Basic validation of required fields and their types
         for field, expected_type in schema.items():
             if field not in item or not isinstance(item[field], expected_type):
                 return False
+        
+        # Additional check for ID format
+        if not re.match(id_pattern, item['id']):
+            return False
+        
         return True
 
 def validate_data(data):
@@ -83,22 +92,40 @@ def validate_data(data):
     return: A tuple containing the cleaned data and an optional warning message about any corrupted items that were removed.
     """
     # Basic check for the presence of main sections
-    if not isinstance(data, dict) or 'tasks' not in data or 'taskLists' not in data:
+    if not isinstance(data, dict) or 'tasks' not in data or 'taskLists' not in data or not isinstance(data['tasks'], list) or not isinstance(data['taskLists'], list):
         raise InvalidDataFormat("The file is missing 'tasks' or 'taskLists' sections'.")
 
     # Validation schemas
     task_fields = {"id": str, "title": str, "description": str, "status": str, "priority": str, "completed": bool, "is_part_of_list": bool} 
-    list_fields = {"id": str, "title": str, "description": str, "tasks": list}    
+    list_fields = {"id": str, "title": str, "description": str, "tasks": list}
+
+    # ID pattern validation for tasks and lists
+    id_pattern_task = rf"^T-\d+$"
+    id_pattern_list = rf"^L-\d+$"
+
+    seen_ids = set()
+    valid_tasks = []
+    valid_lists = []    
 
     # Cleaning tasks
-    original_tasks_count = len(data['tasks'])
-    data['tasks'] = [t for t in data['tasks'] if _is_item_valid(t, task_fields)]
-    corrupted_tasks = original_tasks_count - len(data['tasks'])
+    for task in data['tasks']:
+        if _is_item_valid(task, task_fields, id_pattern_task) and task['id'] not in seen_ids:
+            valid_tasks.append(task)
+            seen_ids.add(task['id'])
+    corrupted_tasks = len(data['tasks']) - len(valid_tasks)
+    data['tasks'] = valid_tasks
 
     # Cleaning lists
-    original_lists_count = len(data['taskLists'])
-    data['taskLists'] = [l for l in data['taskLists'] if _is_item_valid(l, list_fields)]
-    corrupted_lists = original_lists_count - len(data['taskLists'])
+    for list in data['taskLists']:
+        if _is_item_valid(list, list_fields, id_pattern_list) and list['id'] not in seen_ids:
+            for task_id in list['tasks']:
+                if not isinstance(task_id, str) or not re.match(id_pattern_task, task_id):
+                    break
+            else:  # Only add the list if all task IDs are valid
+                valid_lists.append(list)
+                seen_ids.add(list['id'])
+    corrupted_lists = len(data['taskLists']) - len(valid_lists)
+    data['taskLists'] = valid_lists
 
     # Feedback generation
     message = None

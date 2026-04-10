@@ -57,14 +57,13 @@ def add(tm_data, arguments):
     """
     Handles the 'add' command, allowing users to create new tasks or lists. If the user does not specify whether they want to add a task or a list, the function will prompt them to choose. It then collects the necessary information for the chosen type (title, description, priority, list ID) and calls the appropriate function from the core module to create the task or list.
     """
-    # Specify what needs to be created (list or task), if not specified
+    # Determine whether the user wants to add a task or a list
     if not arguments:
         input_type = input("Choose what to create - a task or a list? ").strip().lower()
-        if input_type == 'task' or input_type == 'list':
-            arguments.append(input_type)
-        else:
-            print("Invalid choice. Task cannot be created.")
-            return
+        arguments.append(input_type)        
+    if not arguments[0] == 'task' and not arguments[0] == 'list':    
+        print("Invalid command.")
+        return
         
     # Dictionary for storing input results
     user_input_map = {}
@@ -80,18 +79,18 @@ def add(tm_data, arguments):
         # Getting list-specific inputs
         list_id = add_list(tm_data, user_input_map)
         print(f"List with ID {list_id} added successfully.")
-    elif arguments[0] == 'task':
+    if arguments[0] == 'task':
         # Getting task-specific inputs
         priority = input("Enter priority (low, medium, high) [default: medium]: ").strip().lower()
-        if priority in ['low', 'medium', 'high']:
+        if priority in {'low', 'medium', 'high'}:
             user_input_map['priority'] = priority
         else:
             user_input_map['priority'] = 'medium'
         input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
         if input_list_id:
             user_input_map['list_id'] = input_list_id
-        add_task(tm_data, user_input_map)
-        print("Task added successfully.")
+        task_id = add_task(tm_data, user_input_map)
+        print(f"Task with ID {task_id} added successfully.")
 # End of add function
 
 def remove(tm_data, arguments):

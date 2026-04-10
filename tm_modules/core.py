@@ -11,7 +11,10 @@ from datetime import datetime
 # Reading/storage and primary data processing
 def get_data(path):
     """
-    Receives and transforms data from the storage file.     
+    Receives and transforms data from the storage file. 
+
+    param path: The path to the JSON file containing the data.
+    return: A tuple containing the transformed data and an optional warning message about any corrupted items that were removed during validation.        
     """
     tm_data = {}
     cleaned_data, message = load_data(path)
@@ -39,7 +42,7 @@ def add_list(tm_data, user_input_map):
     :param user_input_map: A dictionary containing the title and optional description of the list to be created.
     :return: The ID of the newly created list.
     """
-    id = generate_id(tm_data['taskLists'], 'L')
+    id = generate_id(tm_data['taskLists'], 'L-')
     user_input_map['id'] = id
     tm_data['taskLists'].append(TaskList.from_dict(user_input_map))
     return id
@@ -49,29 +52,29 @@ def add_task(tm_data, user_input_map):
     Handles the creation of a new task. It takes a dictionary containing the task details, creates a new Task object, and adds it to the global tasks variable. The function returns the ID of the newly created task.
 
     :param user_input_map: A dictionary containing the details of the task to be created, including title, description, priority, and optional list ID.
+    :return: The ID of the newly created task.
     """
-    id = generate_id(tm_data['tasks'], 'T')
+    id = generate_id(tm_data['tasks'], 'T-')
     user_input_map['id'] = id
     tm_data['tasks'].append(Task.from_dict(user_input_map))
+    return id
 
 def generate_id(data, prefix):
     """
     Generates a unique ID for a new task or list by finding the maximum existing ID in the current data and incrementing it by one. This ensures that each new task or list has a unique identifier.
 
-    :param data: The current data containing existing tasks and lists.
-    :param prefix: A string indicating whether the ID is for a task ('T') or a list ('L').
+    :param data: A list containing existing tasks or lists (dictionaries).
+    :param prefix: A string indicating whether the ID is for a task ('T-') or a list ('L-').
     :return: A unique string ID for the new task or list.
     """
     if not data:
-        if prefix == 'T':
-            return 'T1'
-        elif prefix == 'L':
-            return 'L1'
-    #for item in data:
+        if prefix == 'T-':
+            return 'T-1'
+        if prefix == 'L-':
+            return 'L-1'
         
-        
-    #max_id = max(item.id[1:] for item in data)
-    #return max_id + 1
+    max_id = max((int(i['id'][2:])) for i in data)
+    return f"{prefix}{max_id + 1}"
 
 def remove_task(tasks, task_id):
     pass
