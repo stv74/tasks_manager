@@ -76,8 +76,7 @@ def add(tm_data, arguments):
             break
     user_input_map['description'] = input("Enter a description (optional): ").strip()    
     if arguments[0] == 'list':
-        # Getting list-specific inputs
-        list_id = add_list(tm_data, user_input_map)
+        tm_data, list_id = add_list(tm_data, user_input_map)
         print(f"List with ID {list_id} added successfully.")
     if arguments[0] == 'task':
         # Getting task-specific inputs
@@ -89,8 +88,9 @@ def add(tm_data, arguments):
         input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
         if input_list_id:
             user_input_map['list_id'] = input_list_id
-        task_id = add_task(tm_data, user_input_map)
+        tm_data, task_id = add_task(tm_data, user_input_map)
         print(f"Task with ID {task_id} added successfully.")
+    return tm_data
 # End of add function
 
 def remove(tm_data, arguments):

@@ -82,15 +82,15 @@ class TaskList:
         Title of the task list
     description : str
         Description of the task list
-    tasks : list of Task objects
-        List of tasks in the task list
+    list_tasks_ids : list
+        List of task IDs in the task list
     """
     
-    def __init__(self, id, title, description="", tasks=None):
+    def __init__(self, id, title, description="", list_tasks_ids=None):
         self.id = id
         self.title = title
         self.description = description
-        self.tasks = tasks if tasks is not None else []
+        self.list_tasks_ids = list_tasks_ids if list_tasks_ids is not None else []
 
     def to_dict(self):
         """
@@ -100,7 +100,7 @@ class TaskList:
             "id": self.id,
             "title": self.title,
             "description": self.description,
-            "tasks": self.tasks
+            "list_tasks_ids": self.list_tasks_ids
         }
     
     @staticmethod
@@ -114,8 +114,8 @@ class TaskList:
             id=data.get("id"),
             title=data.get("title"),
             description=data.get("description", ""),
-            tasks=data.get("tasks", [])
+            list_tasks_ids=data.get("list_tasks_ids", [])
         )
     
     def __str__(self):
-        return f"List {self.id}: {self.title} - {self.description} with {len(self.tasks)} tasks"
+        return f"List {self.id}: {self.title} - {self.description} with {len(self.list_tasks_ids)} tasks"

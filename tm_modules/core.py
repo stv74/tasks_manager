@@ -35,29 +35,29 @@ def send_data(tm_data, path):
     save_data(data_file, path)
 
 # The function for management of tasks and lists.
-def add_list(tm_data, user_input_map):
+def add_list(data, user_input_map):
     """
     Handles the creation of a new task list. It takes a dictionary containing the title and optional description of the list, creates a new TaskList object, and adds it to the global task_lists variable. The function returns the ID of the newly created list.
 
     :param user_input_map: A dictionary containing the title and optional description of the list to be created.
     :return: The ID of the newly created list.
     """
-    id = generate_id(tm_data['taskLists'], 'L-')
+    id = generate_id(data['taskLists'], 'L-')
     user_input_map['id'] = id
-    tm_data['taskLists'].append(TaskList.from_dict(user_input_map))
-    return id
+    data['taskLists'].append(TaskList.from_dict(user_input_map))
+    return data, id
 
-def add_task(tm_data, user_input_map):
+def add_task(data, user_input_map):
     """
     Handles the creation of a new task. It takes a dictionary containing the task details, creates a new Task object, and adds it to the global tasks variable. The function returns the ID of the newly created task.
 
     :param user_input_map: A dictionary containing the details of the task to be created, including title, description, priority, and optional list ID.
     :return: The ID of the newly created task.
     """
-    id = generate_id(tm_data['tasks'], 'T-')
+    id = generate_id(data['tasks'], 'T-')
     user_input_map['id'] = id
-    tm_data['tasks'].append(Task.from_dict(user_input_map))
-    return id
+    data['tasks'].append(Task.from_dict(user_input_map))
+    return data, id
 
 def generate_id(data, prefix):
     """
