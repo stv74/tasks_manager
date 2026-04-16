@@ -8,7 +8,7 @@ from .core import add_list, add_task, list_tasks, edit_task, remove_task, comple
 from .config import VERSION
 import shlex
 
-def main_loop(tm_data):
+def main_loop(manager):
     """
     Main function of the program, which handles user input and dispatches commands to the appropriate functions in the core module.
     """
@@ -41,7 +41,7 @@ def main_loop(tm_data):
         arguments = parts[1:]
         if command in commands:
             command_func = commands[command]
-            command_func(tm_data, arguments) 
+            command_func(manager, arguments) 
         elif command == "help":
             print("Available commands:")
             for cmd in commands.keys():
@@ -53,7 +53,7 @@ def main_loop(tm_data):
 # End of main_loop function
 
 # Creating lists and tasks
-def add(tm_data, arguments):
+def add(manager, arguments):
     """
     Handles the 'add' command, allowing users to create new tasks or lists. If the user does not specify whether they want to add a task or a list, the function will prompt them to choose. It then collects the necessary information for the chosen type (title, description, priority, list ID) and calls the appropriate function from the core module to create the task or list.
     """
@@ -76,7 +76,7 @@ def add(tm_data, arguments):
             break
     user_input_map['description'] = input("Enter a description (optional): ").strip()    
     if arguments[0] == 'list':
-        tm_data, list_id = add_list(tm_data, user_input_map)
+        list_id = manager.add_list(user_input_map)
         print(f"List with ID {list_id} added successfully.")
     if arguments[0] == 'task':
         # Getting task-specific inputs
@@ -88,12 +88,11 @@ def add(tm_data, arguments):
         input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
         if input_list_id:
             user_input_map['list_id'] = input_list_id
-        tm_data, task_id = add_task(tm_data, user_input_map)
+        task_id = manager.add_task(user_input_map)
         print(f"Task with ID {task_id} added successfully.")
-    return tm_data
 # End of add function
 
-def remove(tm_data, arguments):
+def remove(manager, arguments):
     """
     Handles the "delete" command, which allows users to delete tasks or lists.
     """

@@ -2,36 +2,37 @@
 
 import sys
 from tm_modules.config import DATA_FILE_PATH
-from tm_modules.core import get_data, send_data
+from tm_modules.core import TaskManager
 from tm_modules.cli import main_loop
 from tm_modules.exceptions import TaskManagerError, StorageError, DataSaveError
 
 if __name__ == "__main__":
     try:
-        tm_data, message = get_data(DATA_FILE_PATH)
-        if message:
-            print(message)
-    except FileNotFoundError:
-        print("Data file not found. Creating a new empty one")
-        tm_data = {"tasks": [], "taskLists": []}
+        manager = TaskManager(DATA_FILE_PATH)
+        if manager.message:
+            print(manager.message)
+        main_loop(manager)
+
     except StorageError as e:
-        print(f"Unable to read data. {e}")
+        print(f"Critical startup error: {e}")
         sys.exit(1)
 
-    try:
-        main_loop(tm_data)
     except EOFError:
         print("\nExiting program. Goodbye!")
+
     except TaskManagerError as e:
         print(f"An error occurred: {e}")
+
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
+
     finally:
-        try:
-            send_data(tm_data, DATA_FILE_PATH)
-        except DataSaveError as e:
-            print(f"Unable to save data. {e}")
-        else:
-            print("Data saved. Exiting program. Goodbye!")
+        # We save data only if the manager was created successfully
+        if 'manager' in locals():
+            try:
+                manager.save()
+                print("Data saved. Exiting program. Goodbye!")
+            except DataSaveError as e:
+                print(f"Unable to save data. {e}")
 
 
