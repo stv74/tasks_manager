@@ -5,8 +5,10 @@ Contains the main loop of the Console Task Manager (CTM) application, which hand
 
 from datetime import datetime
 from .core import add_list, add_task, list_tasks, edit_task, remove_task, complete_task
+from .exceptions import ListNotFoundError
 from .config import VERSION
 import shlex
+import re
 
 def main_loop(manager):
     """
@@ -55,7 +57,10 @@ def main_loop(manager):
 # Creating lists and tasks
 def add(manager, arguments):
     """
-    Handles the 'add' command, allowing users to create new tasks or lists. If the user does not specify whether they want to add a task or a list, the function will prompt them to choose. It then collects the necessary information for the chosen type (title, description, priority, list ID) and calls the appropriate function from the core module to create the task or list.
+    Handles the 'add' command, allowing users to create new tasks or lists. If the user does not specify whether they want to add a task or a list, the function will prompt them to choose. It then collects the necessary information for the chosen type (title, description, priority, list ID) and calls the appropriate method from the core module to create the task or list.
+
+    :param manager: The TaskManager instance that manages the tasks and lists.
+    :param arguments: A list of arguments provided by the user, which may include the type of item to add (task or list) and other relevant information.
     """
     # Determine whether the user wants to add a task or a list
     if not arguments:
@@ -85,11 +90,16 @@ def add(manager, arguments):
             user_input_map['priority'] = priority
         else:
             user_input_map['priority'] = 'medium'
-        input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
-        if input_list_id:
-            user_input_map['list_id'] = input_list_id
-        task_id = manager.add_task(user_input_map)
-        print(f"Task with ID {task_id} added successfully.")
+        while True:
+            input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
+            if input_list_id:
+                user_input_map['list_id'] = input_list_id 
+            try:
+                task_id = manager.add_task(user_input_map)
+                print(f"Task with ID {task_id} added successfully.")
+                break
+            except ListNotFoundError as e:
+                print(f"Error: {e}")
 # End of add function
 
 def remove(manager, arguments):
@@ -97,8 +107,17 @@ def remove(manager, arguments):
     Handles the "delete" command, which allows users to delete tasks or lists.
     """
     if not arguments:
-        input_id = input("Enter the number of the list or task you want to delete.").strip()
+        input_id = input("Enter the ID of the list or task you want to delete: ").strip()
         arguments.append(input_id)
+
+    if validate_id(arguments[0], "T-"):
+        remove_task(manager.tasks, arguments[0])
+        print(f"Task with ID {arguments[0]} deleted successfully.")
+    elif validate_id(arguments[0], "L-"):
+        remove_list(manager.task_lists, arguments[0])
+        print(f"List with ID {arguments[0]} deleted successfully.")
+    else:
+        print("Invalid ID format. Please enter a valid task ID (e.g., 'T-1') or list ID (e.g., 'L-1').")
     
     
     
@@ -108,3 +127,15 @@ def send_message(message):
     Displays informational messages to the user that do not require any action from him.
     """
     print(message)
+
+def validate_id(id):
+    """
+    Validates that the provided input ID is in the correct format (e.g., "T-1" for tasks and "L-1" for lists). It checks that the ID starts with the appropriate prefix ("T-" for tasks and "L-" for lists) followed by a number. If the ID is valid, it returns True; otherwise, it returns False.
+    """
+    # ID pattern validation for tasks and lists
+    id_pattern_task = rf"^T-\d+$"
+    id_pattern_list = rf"^L-\d+$"
+
+    if re.match(id_pattern_task, id) or re.match(id_pattern_list, id):
+        return True
+    return False
