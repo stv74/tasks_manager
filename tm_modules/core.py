@@ -53,21 +53,16 @@ class TaskManager:
         :param user_input_map: A dictionary containing the title, description, priority, and optional list ID for the task to be created.
         :return: The ID of the newly created task.
         """
-        if 'list_id' in user_input_map:
-            list_id = user_input_map['list_id']
-            for task_list in self.task_lists:
-                if task_list.id == list_id:
-                    task_list.list_tasks_ids.append(task.id)
-                    break
-            else:
-                raise exceptions.ListNotFoundError(f"No list with ID {list_id} exists.")
-            
         id = self._generate_id('T-')
         user_input_map['id'] = id
-        user_input_map['is_part_of_list'] = 'list_id' in user_input_map
-            
+        user_input_map['is_part_of_list'] = 'list_id' in user_input_map        
         task = Task.from_dict(user_input_map)
         self.tasks.append(task)
+
+        if 'list_id' in user_input_map:
+            list_id = user_input_map['list_id']
+            found_list = next((task_list for task_list in self.task_lists if task_list.id == list_id), None)           
+            
         return id
     
     def _generate_id(self, prefix):
@@ -90,7 +85,14 @@ class TaskManager:
         max_id = max((int(i.id[2:])) for i in data)
         return f"{prefix}{max_id + 1}"
    
+    def get_all_list_ids(self):
+        """
+        Retrieves a list of all existing list IDs.
 
+        :return: A list of strings representing the IDs of all lists.
+        """
+        list_ids = [task_list.id for task_list in self.task_lists]
+        return list_ids
 
 
 # The function for management of tasks and lists.

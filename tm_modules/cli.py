@@ -92,14 +92,15 @@ def add(manager, arguments):
             user_input_map['priority'] = 'medium'
         while True:
             input_list_id = input("Enter the list ID to add the task to (leave blank for no list): ").strip()
-            if input_list_id:
-                user_input_map['list_id'] = input_list_id 
-            try:
-                task_id = manager.add_task(user_input_map)
-                print(f"Task with ID {task_id} added successfully.")
+            if not input_list_id: 
                 break
-            except ListNotFoundError as e:
-                print(f"Error: {e}")
+            if input_list_id in manager.get_all_list_ids():
+                user_input_map['list_id'] = input_list_id
+                break
+            else:
+                print("No list with that ID exists. Please enter a valid list ID or leave blank.")
+        task_id = manager.add_task(user_input_map)
+        print(f"Task with ID {task_id} added successfully.")
 # End of add function
 
 def remove(manager, arguments):
