@@ -108,7 +108,7 @@ def remove(manager, arguments):
     Handles the "delete" command, which allows users to delete tasks or lists.
     """
     if not arguments:
-        input_id = input("Enter the ID of the list or task you want to delete: ").strip()
+        input_id = input("Enter the ID of the list (e.g., 'L-1') or task (e.g., 'T-1') you want to delete: ").strip()
         arguments.append(input_id)
 
     if validate_id(arguments[0], "T-"):

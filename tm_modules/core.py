@@ -54,15 +54,9 @@ class TaskManager:
         :return: The ID of the newly created task.
         """
         id = self._generate_id('T-')
-        user_input_map['id'] = id
-        user_input_map['is_part_of_list'] = 'list_id' in user_input_map        
+        user_input_map['id'] = id        
         task = Task.from_dict(user_input_map)
-        self.tasks.append(task)
-
-        if 'list_id' in user_input_map:
-            list_id = user_input_map['list_id']
-            found_list = next((task_list for task_list in self.task_lists if task_list.id == list_id), None)           
-            
+        self.tasks.append(task)           
         return id
     
     def _generate_id(self, prefix):
