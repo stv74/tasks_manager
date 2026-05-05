@@ -59,6 +59,31 @@ class TaskManager:
         self.tasks.append(task)           
         return id
     
+    def remove(self, id):
+        """
+        Handles the deletion of a task or list based on the provided ID. 
+
+        :param id: A string representing the ID of the task or list to be deleted (e.g., 'T-1' for a task or 'L-1' for a list).
+        :return: A tuple containing the ID and type of the deleted item (e.g., ('T-1', 'Task') or ('L-1', 'List')).
+        :raises InvalidIDError: If the provided ID format is invalid.        
+        """
+        if id[:2] == 'T-':
+            for i, task in enumerate(self.tasks):
+                if task.id == id:
+                    del self.tasks[i]
+                    return id, "Task"
+            raise exceptions.TaskNotFoundError(f"No task with ID {id} found.")
+        elif id[:2] == 'L-':
+            for i, task_list in enumerate(self.task_lists):
+                if task_list.id == id:
+                    if next((task for task in self.tasks if task.list_id == id), None):
+                        raise exceptions.ListNotFoundError(f"Cannot delete list with ID {id}. It still contains tasks.")
+                    del self.task_lists[i]
+                    return id, "List"
+            raise exceptions.ListNotFoundError(f"No list with ID {id} found.")
+        else:
+            raise exceptions.InvalidIDError("Invalid ID format. Please enter a valid task ID (e.g., 'T-1') or list ID (e.g., 'L-1').")
+
     def _generate_id(self, prefix):
         """
         Generates a unique ID for a new task or list by finding the maximum existing ID in the current data and incrementing it by one. This ensures that each new task or list has a unique identifier.
@@ -71,7 +96,7 @@ class TaskManager:
         elif prefix == 'L-':
             data = self.task_lists
         else:
-            raise ValueError("Invalid prefix. Use 'T-' for tasks and 'L-' for lists.")
+            raise exceptions.InvalidIDError("Invalid prefix. Use 'T-' for tasks and 'L-' for lists.")
         
         if not data:
             return f"{prefix}1"

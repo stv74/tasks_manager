@@ -5,7 +5,7 @@ Contains the main loop of the Console Task Manager (CTM) application, which hand
 
 from datetime import datetime
 from .core import add_list, add_task, list_tasks, edit_task, remove_task, complete_task
-from .exceptions import ListNotFoundError
+from .exceptions import CoreError, ListNotFoundError
 from .config import VERSION
 import shlex
 import re
@@ -106,22 +106,19 @@ def add(manager, arguments):
 def remove(manager, arguments):
     """
     Handles the "delete" command, which allows users to delete tasks or lists.
+
+    :param manager: The TaskManager instance that manages the tasks and lists.
+    :param arguments: A list of arguments provided by the user, which may include the type of item to add (task or list) and other relevant information.
     """
     if not arguments:
         input_id = input("Enter the ID of the list (e.g., 'L-1') or task (e.g., 'T-1') you want to delete: ").strip()
         arguments.append(input_id)
 
-    if validate_id(arguments[0], "T-"):
-        remove_task(manager.tasks, arguments[0])
-        print(f"Task with ID {arguments[0]} deleted successfully.")
-    elif validate_id(arguments[0], "L-"):
-        remove_list(manager.task_lists, arguments[0])
-        print(f"List with ID {arguments[0]} deleted successfully.")
-    else:
-        print("Invalid ID format. Please enter a valid task ID (e.g., 'T-1') or list ID (e.g., 'L-1').")
-    
-    
-    
+    try:
+        id, item = manager.remove(arguments[0])
+        print(f"{item} with ID {id} deleted successfully.")
+    except CoreError as e:
+        print(f"Error: {e}")    
 
 def send_message(message):
     """

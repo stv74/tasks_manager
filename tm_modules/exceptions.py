@@ -28,6 +28,10 @@ class CoreError(TaskManagerError):
     """Basic exception for errors in core functionalities."""
     pass
 
+class InvalidIDError(CoreError):
+    """Occurs when an invalid ID format is provided."""
+    pass
+
 class TaskNotFoundError(CoreError):
     """Occurs when a task with the specified ID is not found."""
     pass
