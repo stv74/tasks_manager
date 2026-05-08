@@ -16,8 +16,8 @@ class TaskManager:
         self.path = path
         try:
             row_data, self.message = load_data(self.path)
-        except FileNotFoundError:
-            self.message = "Data file not found. Creating a new empty one"
+        except exceptions.DataLoadError as e:
+            self.message = "Data file not found. Creating a new empty one."
             row_data = {"tasks": [], "taskLists": []}
 
         self.tasks = [Task.from_dict(task) for task in row_data['tasks']]
@@ -112,25 +112,3 @@ class TaskManager:
         """
         list_ids = [task_list.id for task_list in self.task_lists]
         return list_ids
-
-
-# The function for management of tasks and lists.
-
-
-
-
-
-
-def remove_task(tasks, task_id):
-    pass
-
-def list_tasks(tasks):
-    pass
-
-def edit_task(tasks, task_id, new_task):
-    pass
-
-
-def complete_task(tasks, task_id):
-    pass
-

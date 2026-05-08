@@ -4,7 +4,6 @@ Contains the main loop of the Console Task Manager (CTM) application, which hand
 """
 
 from datetime import datetime
-from .core import add_list, add_task, list_tasks, edit_task, remove_task, complete_task
 from .exceptions import CoreError, ListNotFoundError
 from .config import VERSION
 import shlex
@@ -14,15 +13,15 @@ def main_loop(manager):
     """
     Main function of the program, which handles user input and dispatches commands to the appropriate functions in the core module.
     """
-    print(f"--- Console Task Manager v{VERSION} ---")
-    print("To get started, enter one of the following commands: ")
+    print(f"\n--- Console Task Manager v{VERSION} ---\n")
+    print("To get started, enter one of the following commands:\n")
     print("add - add a task or list;")
     print("list - view lists and tasks;")
     print("edit - edit a task or list;")
     print("complete - mark task as completed;")
     print("delete - delete a task or list;")
     print("help - get help;")
-    print("exit - exit the program.")
+    print("exit - exit the program.\n")
 
     # Command Dispatcher
     commands = {
@@ -118,7 +117,16 @@ def remove(manager, arguments):
         id, item = manager.remove(arguments[0])
         print(f"{item} with ID {id} deleted successfully.")
     except CoreError as e:
-        print(f"Error: {e}")    
+        print(f"Error: {e}")
+
+def list_tasks(manager, arguments):
+    pass
+
+def edit_task(manager, arguments):
+    pass
+
+def complete_task(manager, arguments):
+    pass
 
 def send_message(message):
     """

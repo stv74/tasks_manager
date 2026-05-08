@@ -32,6 +32,8 @@ def load_data(path):
 
             return cleaned_data, message
     
+    except FileNotFoundError as e:
+        raise DataLoadError("File not found.") from e
     except json.JSONDecodeError as e:
         raise InvalidDataFormat(f"JSON decoding error: {e}") from e    
     except OSError as e:

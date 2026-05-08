@@ -14,25 +14,25 @@ if __name__ == "__main__":
         main_loop(manager)
 
     except StorageError as e:
-        print(f"Critical startup error: {e}")
+        print(f"\nCritical startup error: {e}")
         sys.exit(1)
 
     except EOFError:
-        print("\nExiting program. Goodbye!")
+        print(f"\nExiting program. Goodbye!")
 
     except TaskManagerError as e:
-        print(f"An error occurred: {e}")
+        print(f"\nAn error occurred: {e}")
 
     except Exception as e:
-        print(f"An unexpected error occurred: {e}")
+        print(f"\nAn unexpected error occurred: {e}")
 
     finally:
         # We save data only if the manager was created successfully
         if 'manager' in locals():
             try:
                 manager.save()
-                print("Data saved. Exiting program. Goodbye!")
+                print("\nData saved. Exiting program. Goodbye!")
             except DataSaveError as e:
-                print(f"Unable to save data. {e}")
+                print(f"\nUnable to save data. {e}")
 
 
