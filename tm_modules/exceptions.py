@@ -23,7 +23,6 @@ class DataSaveError(StorageError):
     """Occurs when it is impossible to record data."""
     pass
 
-
 class CoreError(TaskManagerError):
     """Basic exception for errors in core functionalities."""
     pass

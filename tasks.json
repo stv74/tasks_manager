@@ -1,0 +1,21 @@
+{
+    "tasks": [
+        {
+            "id": "T-1",
+            "title": "Task 1",
+            "description": "qwe",
+            "status": "pending",
+            "priority": "low",
+            "deadline": null,
+            "completed": false,
+            "list_id": null
+        }
+    ],
+    "taskLists": [
+        {
+            "id": "L-1",
+            "title": "List 1",
+            "description": "asd"
+        }
+    ]
+}

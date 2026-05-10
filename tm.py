@@ -17,11 +17,11 @@ if __name__ == "__main__":
         print(f"\nCritical startup error: {e}")
         sys.exit(1)
 
-    except EOFError:
-        print(f"\nExiting program. Goodbye!")
-
     except TaskManagerError as e:
         print(f"\nAn error occurred: {e}")
+
+    except EOFError:
+        print(f"\nExiting program. Goodbye!")
 
     except Exception as e:
         print(f"\nAn unexpected error occurred: {e}")

@@ -19,10 +19,9 @@ def load_data(path):
     try:        
         with open(path, 'r', encoding='utf-8') as file:
             data = json.load(file)
-            
             # Data validation
             cleaned_data, message = validate_data(data)
-
+            print("Data validation completed.")
             # If there are error messages, make a backup of the original file before returning the cleaned data.
             if message:
                 if _create_backup(path):
@@ -32,8 +31,8 @@ def load_data(path):
 
             return cleaned_data, message
     
-    except FileNotFoundError as e:
-        raise DataLoadError("File not found.") from e
+    except FileNotFoundError:
+        raise
     except json.JSONDecodeError as e:
         raise InvalidDataFormat(f"JSON decoding error: {e}") from e    
     except OSError as e:

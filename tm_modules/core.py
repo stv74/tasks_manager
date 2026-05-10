@@ -16,7 +16,7 @@ class TaskManager:
         self.path = path
         try:
             row_data, self.message = load_data(self.path)
-        except exceptions.DataLoadError as e:
+        except FileNotFoundError:
             self.message = "Data file not found. Creating a new empty one."
             row_data = {"tasks": [], "taskLists": []}
 
