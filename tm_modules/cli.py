@@ -112,12 +112,29 @@ def remove(manager, arguments):
     if not arguments:
         input_id = input("Enter the ID of the list (e.g., 'L-1') or task (e.g., 'T-1') you want to delete: ").strip()
         arguments.append(input_id)
+    if len(arguments) !=1:
+        print("Invalid command!")
+        return
 
     try:
         id, item = manager.remove(arguments[0])
         print(f"{item} with ID {id} deleted successfully.")
     except CoreError as e:
-        print(f"Error: {e}")
+        print(f"Error! {e}")
+
+def complete_task(manager, arguments):
+    if not arguments:
+        input_id = input("Enter the ID of the task (e.g., 'T-1') you want to complete: ").strip()
+        arguments.append(input_id)
+    if len(arguments) !=1:
+        print("Invalid command!")
+        return
+    
+    try:
+        id, item = manager.complete_task(arguments[0])
+        print(f"{item} with ID {id} completed successfully.")
+    except CoreError as e:
+        print(f"Error! {e}")
 
 def list_tasks(manager, arguments):
     pass
@@ -125,8 +142,6 @@ def list_tasks(manager, arguments):
 def edit_task(manager, arguments):
     pass
 
-def complete_task(manager, arguments):
-    pass
 
 def send_message(message):
     """

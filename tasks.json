@@ -3,9 +3,49 @@
         {
             "id": "T-1",
             "title": "Task 1",
-            "description": "qwe",
+            "description": "asd",
+            "status": "pending",
+            "priority": "medium",
+            "deadline": null,
+            "completed": false,
+            "list_id": null
+        },
+        {
+            "id": "T-2",
+            "title": "Task 2",
+            "description": "qasdw",
             "status": "pending",
             "priority": "low",
+            "deadline": null,
+            "completed": false,
+            "list_id": "L-1"
+        },
+        {
+            "id": "T-3",
+            "title": "Task 3",
+            "description": "zxsdfc",
+            "status": "pending",
+            "priority": "medium",
+            "deadline": null,
+            "completed": false,
+            "list_id": "L-2"
+        },
+        {
+            "id": "T-5",
+            "title": "Task 5",
+            "description": "dsugfdsuihvdfiu",
+            "status": "pending",
+            "priority": "medium",
+            "deadline": null,
+            "completed": false,
+            "list_id": "L-1"
+        },
+        {
+            "id": "T-6",
+            "title": "Task 7",
+            "description": "dsgbh",
+            "status": "pending",
+            "priority": "medium",
             "deadline": null,
             "completed": false,
             "list_id": null
@@ -15,7 +55,12 @@
         {
             "id": "L-1",
             "title": "List 1",
-            "description": "asd"
+            "description": "qwerty"
+        },
+        {
+            "id": "L-2",
+            "title": "List 2",
+            "description": "asdf"
         }
     ]
 }

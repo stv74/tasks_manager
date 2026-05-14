@@ -18,13 +18,13 @@ if __name__ == "__main__":
         sys.exit(1)
 
     except TaskManagerError as e:
-        print(f"\nAn error occurred: {e}")
+        print(f"\nAn error occurred! {e}")
 
     except EOFError:
-        print(f"\nExiting program. Goodbye!")
+        print(f"\nProgram execution interrupted")
 
     except Exception as e:
-        print(f"\nAn unexpected error occurred: {e}")
+        print(f"\nAn unexpected error occurred! {e}")
 
     finally:
         # We save data only if the manager was created successfully
@@ -33,6 +33,6 @@ if __name__ == "__main__":
                 manager.save()
                 print("\nData saved. Exiting program. Goodbye!")
             except DataSaveError as e:
-                print(f"\nUnable to save data. {e}")
+                print(f"\nUnable to save data! {e}")
 
 

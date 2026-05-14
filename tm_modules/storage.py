@@ -21,7 +21,6 @@ def load_data(path):
             data = json.load(file)
             # Data validation
             cleaned_data, message = validate_data(data)
-            print("Data validation completed.")
             # If there are error messages, make a backup of the original file before returning the cleaned data.
             if message:
                 if _create_backup(path):
@@ -97,8 +96,8 @@ def validate_data(data):
         raise InvalidDataFormat("The file is missing 'tasks' or 'taskLists' sections'.")
 
     # Validation schemas
-    task_fields = {"id": str, "title": str, "description": str, "status": str, "priority": str, "completed": bool, "is_part_of_list": bool} 
-    list_fields = {"id": str, "title": str, "description": str, "tasks": list}
+    task_fields = {"id": str, "title": str, "description": str, "status": str, "priority": str, "deadline": (str, type(None)), "completed": bool, "list_id": (str, type(None))} 
+    list_fields = {"id": str, "title": str, "description": str}
 
     # ID pattern validation for tasks and lists
     id_pattern_task = rf"^T-\d+$"
@@ -117,14 +116,10 @@ def validate_data(data):
     data['tasks'] = valid_tasks
 
     # Cleaning lists
-    for list in data['taskLists']:
-        if _is_item_valid(list, list_fields, id_pattern_list) and list['id'] not in seen_ids:
-            for task_id in list['tasks']:
-                if not isinstance(task_id, str) or not re.match(id_pattern_task, task_id):
-                    break
-            else:  # Only add the list if all task IDs are valid
-                valid_lists.append(list)
-                seen_ids.add(list['id'])
+    for task_list in data['taskLists']:
+        if _is_item_valid(task_list, list_fields, id_pattern_list) and task_list['id'] not in seen_ids:
+            valid_lists.append(task_list)
+            seen_ids.add(task_list['id'])
     corrupted_lists = len(data['taskLists']) - len(valid_lists)
     data['taskLists'] = valid_lists
 
