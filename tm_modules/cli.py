@@ -14,15 +14,7 @@ def main_loop(manager):
     Main function of the program, which handles user input and dispatches commands to the appropriate functions in the core module.
     """
     print(f"\n--- Console Task Manager v{VERSION} ---\n")
-    print("To get started, enter one of the following commands:\n")
-    print("add - add a task or list;")
-    print("list - view lists and tasks;")
-    print("edit - edit a task or list;")
-    print("complete - mark task as completed;")
-    print("delete - delete a task or list;")
-    print("help - get help;")
-    print("exit - exit the program.\n")
-
+    
     # Command Dispatcher
     commands = {
         "add": add,
@@ -41,6 +33,9 @@ def main_loop(manager):
         command = parts[0].lower()
         arguments = parts[1:]
         if command in commands:
+            if not arguments:
+                print("No arguments provided. Please provide the necessary arguments for the command.")
+                continue
             command_func = commands[command]
             command_func(manager, arguments) 
         elif command == "help":
@@ -56,16 +51,12 @@ def main_loop(manager):
 # Creating lists and tasks
 def add(manager, arguments):
     """
-    Handles the 'add' command, allowing users to create new tasks or lists. If the user does not specify whether they want to add a task or a list, the function will prompt them to choose. It then collects the necessary information for the chosen type (title, description, priority, list ID) and calls the appropriate method from the core module to create the task or list.
+    Handles the 'add' command, allowing users to create new tasks or lists.
 
     :param manager: The TaskManager instance that manages the tasks and lists.
     :param arguments: A list of arguments provided by the user, which may include the type of item to add (task or list) and other relevant information.
-    """
-    # Determine whether the user wants to add a task or a list
-    if not arguments:
-        input_type = input("Choose what to create - a task or a list? ").strip().lower()
-        arguments.append(input_type)        
-    if not arguments[0] == 'task' and not arguments[0] == 'list':    
+    """         
+    if len(arguments) != 1 or not arguments[0] == 'task' and not arguments[0] == 'list':
         print("Invalid command.")
         return
         
@@ -108,10 +99,7 @@ def remove(manager, arguments):
 
     :param manager: The TaskManager instance that manages the tasks and lists.
     :param arguments: A list of arguments provided by the user, which may include the type of item to add (task or list) and other relevant information.
-    """
-    if not arguments:
-        input_id = input("Enter the ID of the list (e.g., 'L-1') or task (e.g., 'T-1') you want to delete: ").strip()
-        arguments.append(input_id)
+    """    
     if len(arguments) !=1:
         print("Invalid command!")
         return
@@ -123,9 +111,6 @@ def remove(manager, arguments):
         print(f"Error! {e}")
 
 def complete_task(manager, arguments):
-    if not arguments:
-        input_id = input("Enter the ID of the task (e.g., 'T-1') you want to complete: ").strip()
-        arguments.append(input_id)
     if len(arguments) !=1:
         print("Invalid command!")
         return
