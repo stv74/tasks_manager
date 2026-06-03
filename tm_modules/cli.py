@@ -111,13 +111,16 @@ def remove(manager, arguments):
         print(f"Error! {e}")
 
 def complete_task(manager, arguments):
-    if len(arguments) !=1:
+    if len(arguments) > 2 or len(arguments) == 2 and arguments[1].lower() != 'cancel':       
         print("Invalid command!")
         return
     
     try:
-        id, item = manager.complete_task(arguments[0])
-        print(f"{item} with ID {id} completed successfully.")
+        id = manager.complete_task(arguments)
+        if len(arguments) == 2:
+            print(f"The task with ID {id} marked as not completed.")
+        else:
+            print(f"The task with ID {id} completed successfully.")
     except CoreError as e:
         print(f"Error! {e}")
 

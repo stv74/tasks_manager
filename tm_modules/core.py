@@ -84,6 +84,25 @@ class TaskManager:
         else:
             raise exceptions.InvalidIDError("Invalid ID format. Please enter a valid task ID (e.g., 'T-1') or list ID (e.g., 'L-1').")
 
+    def complete_task(self, arguments):
+        """
+        Handles the completion of a task based on the provided ID. 
+
+        :param arguments: A list of arguments where the first element is the task ID (e.g., 'T-1') and the optional second element can be 'cancel' to mark the task as not completed.
+        :return: The ID of the completed task (e.g., 'T-1').
+        :raises InvalidIDError: If the provided ID format is invalid.        
+        """        
+        for task in self.tasks:
+            if task.id == arguments[0]:
+                if len(arguments) == 2:
+                    task.completed = False
+                    return task.id
+                else:
+                    task.completed = True
+                    return task.id
+        
+        raise exceptions.TaskNotFoundError(f"No task with ID {arguments[0]} found.")
+
     def _generate_id(self, prefix):
         """
         Generates a unique ID for a new task or list by finding the maximum existing ID in the current data and incrementing it by one. This ensures that each new task or list has a unique identifier.
